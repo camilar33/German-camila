@@ -1,0 +1,1298 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F1F2EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141619" media="(prefers-color-scheme: dark)">
+<title>Deutschheft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: one narrow left-aligned column on graph paper, a fixed signage-style tab bar at the bottom.
+   Material: German stationery notebook + Deutsche Bahn / BVG wayfinding. One accent: RAL 1023 traffic yellow. */
+:root{
+  --paper:#F1F2EF;      /* cool off-white */
+  --paper-2:#E6E8E4;    /* inset fill */
+  --sheet:#F8F9F7;      /* raised paper (flashcard) */
+  --ink:#16181B;        /* graphite */
+  --ink-2:#464B51;
+  --ink-3:#7E848A;
+  --rule:rgba(22,24,27,.16);
+  --rule-2:rgba(22,24,27,.08);
+  --grid:rgba(40,60,90,.055);
+  --signal:#F2C200;     /* Verkehrsgelb */
+  --on-signal:#16181B;
+  --board:#1A1D21;
+  --board-cell:#24282D;
+  --board-ink:#EDEEEA;
+  --board-mute:#8E949A;
+  --der:#2D5B8B; --die:#A23F35; --das:#2E7649;
+  --ok:#2E7649; --bad:#A23F35;
+  --f-ui:"Schibsted Grotesk", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --f-de:"Newsreader", Georgia, "Times New Roman", serif;
+  --gut:16px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141619; --paper-2:#1C1F23; --sheet:#1E2125;
+    --ink:#E7E8E4; --ink-2:#B2B6BA; --ink-3:#7C8187;
+    --rule:rgba(231,232,228,.16); --rule-2:rgba(231,232,228,.07); --grid:rgba(200,215,235,.035);
+    --board:#0C0E10; --board-cell:#191C20; --board-ink:#EDEEEA; --board-mute:#7E848A;
+    --der:#86AEDB; --die:#E3907F; --das:#83C59B; --ok:#83C59B; --bad:#E3907F;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141619; --paper-2:#1C1F23; --sheet:#1E2125;
+  --ink:#E7E8E4; --ink-2:#B2B6BA; --ink-3:#7C8187;
+  --rule:rgba(231,232,228,.16); --rule-2:rgba(231,232,228,.07); --grid:rgba(200,215,235,.035);
+  --board:#0C0E10; --board-cell:#191C20; --board-ink:#EDEEEA; --board-mute:#7E848A;
+  --der:#86AEDB; --die:#E3907F; --das:#83C59B; --ok:#83C59B; --bad:#E3907F;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; font-family:var(--f-ui); font-size:16px; line-height:1.45; color:var(--ink);
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:20px 20px; background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0;text-align:left}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.num,.tab{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.wrap{max-width:560px;margin:0 auto;padding-inline:var(--gut);padding-block:20px calc(108px + env(safe-area-inset-bottom,0px))}
+
+/* ---------- storage warning ---------- */
+.warn{margin:0 0 16px;padding:10px 12px;border:1.5px solid var(--bad);color:var(--ink);background:var(--paper);font-size:14px;display:flex;gap:10px}
+.warn b{color:var(--bad)}
+
+/* ---------- headers ---------- */
+.head{display:flex;flex-direction:column;gap:4px;margin-bottom:22px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+h1{font-size:34px;line-height:1.05;letter-spacing:-.02em;font-weight:700;margin:0;text-wrap:balance}
+h2{font-size:13px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin:0;color:var(--ink)}
+.sec{margin-top:32px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:8px;border-bottom:2px solid var(--ink);margin-bottom:4px}
+.sec-h .aside{font-size:13px;color:var(--ink-3)}
+.muted{color:var(--ink-3)}
+.small{font-size:13px}
+.tag{display:inline-block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink-3);border:1px solid var(--rule);padding:1px 5px;vertical-align:2px}
+.tag.now{background:var(--signal);color:var(--on-signal);border-color:var(--signal)}
+
+/* line badge (U-Bahn style deck code) */
+.code{flex:none;display:inline-grid;place-items:center;min-width:38px;height:26px;padding:0 6px;background:var(--ink);color:var(--paper);font-weight:800;font-size:12px;letter-spacing:.04em;border-radius:3px}
+
+/* ---------- segmented control ---------- */
+.seg{display:flex;border:1.5px solid var(--ink);border-radius:4px;overflow:hidden;margin-bottom:18px}
+.seg button{flex:1;padding:9px 10px;font-size:14px;font-weight:600;text-align:center;color:var(--ink-2)}
+.seg button+button{border-left:1.5px solid var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:10px 16px;border:1.5px solid var(--ink);border-radius:4px;font-weight:600;font-size:15px}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.signal{background:var(--signal);color:var(--on-signal);border-color:var(--signal)}
+.btn.block{width:100%}
+.btn.ghost{border-color:var(--rule)}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btn:active{transform:translateY(1px)}
+.link{font-weight:600;font-size:14px;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.row-btns{display:flex;gap:10px;flex-wrap:wrap}
+.row-btns .btn{flex:1 1 140px}
+
+/* ---------- departure board ---------- */
+.board{background:var(--board);color:var(--board-ink);border-radius:6px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:14px}
+.board-top{display:flex;justify-content:space-between;gap:10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--board-mute);font-weight:600}
+.board-top .yl{color:var(--signal)}
+.board-main{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.flaps{display:flex;gap:4px}
+.flap{position:relative;width:44px;height:60px;background:var(--board-cell);border-radius:3px;display:grid;place-items:center;font-size:44px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.flap::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--board)}
+.board-unit{font-size:15px;color:var(--board-ink);padding-bottom:6px}
+.board-unit small{display:block;color:var(--board-mute);font-size:12px}
+.board-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid rgba(237,238,234,.14);padding-top:12px;gap:10px}
+.board-grid b{display:block;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.board-grid span{font-size:12px;color:var(--board-mute);line-height:1.25;display:block}
+
+/* ---------- checklist rows ---------- */
+.list{list-style:none;margin:0;padding:0}
+.item{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--rule-2)}
+.item:last-child{border-bottom:0}
+.item .body{flex:1;min-width:0}
+.item .t{font-weight:600}
+.item .d{font-size:14px;color:var(--ink-2)}
+.item.done .t{color:var(--ink-3);text-decoration:line-through;text-decoration-thickness:1px}
+.chk{flex:none;width:26px;height:26px;border:1.5px solid var(--ink);border-radius:3px;display:grid;place-items:center;margin-top:-1px;transition:background .18s}
+.chk svg{width:16px;height:16px}
+.chk path{fill:none;stroke:var(--on-signal);stroke-width:2.6;stroke-linecap:square;stroke-dasharray:22;stroke-dashoffset:22;transition:stroke-dashoffset .22s ease-out .04s}
+.done .chk{background:var(--signal);border-color:var(--signal)}
+.done .chk path{stroke-dashoffset:0}
+.go{flex:none;align-self:center;font-size:13px;font-weight:600;padding:6px 0 6px 8px;color:var(--ink-2)}
+.agenda{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin-top:8px;font-size:13px;color:var(--ink-2)}
+.agenda span:nth-child(odd){font-variant-numeric:tabular-nums;color:var(--ink-3)}
+.stepn{flex:none;width:26px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink-3);padding-top:1px}
+
+/* ---------- time ---------- */
+.meters{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:20px;padding:16px 0 6px}
+.meter .lbl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.meter .val{font-size:30px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.meter .val small{font-size:15px;font-weight:500;color:var(--ink-3);letter-spacing:0}
+.ruler{position:relative;height:12px;margin-top:8px;background:var(--paper-2);overflow:hidden}
+.ruler i{position:absolute;left:0;top:0;bottom:0;background:var(--ink);transition:width .4s ease}
+.ruler.full i{background:var(--signal)}
+.ruler::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(10% - 1px),var(--paper) calc(10% - 1px),var(--paper) 10%)}
+.quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+.qb{display:flex;flex-direction:column;gap:2px;padding:11px 12px;border:1.5px solid var(--ink);border-radius:4px;background:var(--paper);transition:background .3s}
+.qb .k{font-size:14px;color:var(--ink-2);font-weight:500}
+.qb .m{font-size:21px;font-weight:700;font-variant-numeric:tabular-nums}
+.qb.hit{background:var(--signal);border-color:var(--signal);color:var(--on-signal);transition:none}
+.qb.hit .k{color:var(--on-signal)}
+.chart{margin-top:18px}
+.chart svg{display:block;width:100%;height:auto}
+.chart text{fill:var(--ink-3);font-family:var(--f-ui);font-size:10px;font-variant-numeric:tabular-nums}
+.chart .tv{fill:var(--ink-2);font-weight:600}
+.chart .bar{fill:var(--ink)}
+.chart .bar.today{fill:var(--signal)}
+.chart .track{fill:var(--paper-2)}
+.chart .goal{stroke:var(--ink-2);stroke-width:1;stroke-dasharray:3 3}
+.loglist{margin-top:12px;font-size:14px}
+.logrow{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--rule)}
+.logrow:last-child{border-bottom:0}
+
+/* ---------- decks ---------- */
+.deck{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--rule-2);width:100%}
+.deck .body{flex:1;min-width:0}
+.deck .n{font-weight:700;font-size:17px}
+.deck .p{font-size:13px;color:var(--ink-3)}
+.counts{display:flex;gap:12px;font-size:13px;font-variant-numeric:tabular-nums;color:var(--ink-3);text-align:right}
+.counts b{display:block;font-size:17px;color:var(--ink);font-weight:700}
+.counts .zero b{color:var(--ink-3);font-weight:500}
+.duebar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0}
+
+/* ---------- flashcard ---------- */
+.sess-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.prog{height:4px;background:var(--paper-2);margin-bottom:18px}
+.prog i{display:block;height:100%;background:var(--ink);transition:width .3s}
+.flip{perspective:1200px;width:100%;display:block;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.flip-in{position:relative;height:340px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.3,.7,.2,1)}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--sheet);border:1.5px solid var(--ink);border-radius:6px;padding:16px 18px;display:flex;flex-direction:column;overflow:hidden}
+.face::before{content:"";position:absolute;left:0;right:0;top:46px;height:1px;background:var(--die);opacity:.35}
+.face.back{transform:rotateY(180deg)}
+.face-top{display:flex;justify-content:space-between;align-items:center;gap:8px;height:22px;font-size:12px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.de{font-family:var(--f-de);font-optical-sizing:auto}
+.word{margin:auto 0;font-family:var(--f-de);font-size:44px;line-height:1.05;letter-spacing:-.01em;font-weight:500;overflow-wrap:anywhere}
+.word.long{font-size:32px}
+.word .art{font-size:.62em;font-weight:400;margin-right:.18em}
+.art{font-family:var(--f-de);font-style:italic;margin-right:.24em}
+.art-der{color:var(--der)} .art-die{color:var(--die)} .art-das{color:var(--das)}
+.hint{font-size:13px;color:var(--ink-3)}
+.back .w2{font-family:var(--f-de);font-size:24px;margin-top:14px;line-height:1.15;overflow-wrap:anywhere}
+.back .pt{font-size:20px;font-weight:600;margin-top:4px}
+.kv{display:grid;grid-template-columns:72px 1fr;gap:6px 10px;margin-top:auto;font-size:14px;padding-top:12px;border-top:1px solid var(--rule-2)}
+.kv dt{color:var(--ink-3);font-size:12px;text-transform:uppercase;letter-spacing:.06em;padding-top:2px}
+.kv dd{margin:0;min-width:0}
+.kv .exs{font-family:var(--f-de);font-size:17px;font-style:italic;line-height:1.35}
+.rate{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:14px}
+.rate button{border:1.5px solid var(--ink);border-radius:4px;padding:10px 4px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:58px;justify-content:center}
+.rate b{font-size:14px}
+.rate span{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.rate button:first-child{border-color:var(--bad)}
+.rate button:first-child b{color:var(--bad)}
+.rate[hidden]{display:none!important}
+.flip-cta{margin-top:14px}
+
+/* ---------- diary ---------- */
+.entry{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;padding:14px 0;border-bottom:1px solid var(--rule-2);width:100%}
+.entry .date{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;padding-top:3px}
+.entry .date small{display:block;font-weight:500;color:var(--ink-3)}
+.entry .de{font-size:19px;line-height:1.3}
+.entry .pt{font-size:14px;color:var(--ink-2);margin-top:2px}
+.entry .meta{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
+.place{font-size:12px;padding:2px 7px;border:1px solid var(--rule);border-radius:20px;color:var(--ink-2)}
+.missing{font-size:15px;color:var(--ink-3);font-style:italic}
+.month{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink-3);padding-top:18px}
+
+/* ---------- training ---------- */
+.streak{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;padding:6px 0 4px}
+.streak .big{font-size:56px;font-weight:800;line-height:.9;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.streak .lab{padding-bottom:4px}
+.days{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:3px;margin-top:14px}
+.days i{aspect-ratio:1;max-width:100%;border:1px solid var(--rule);display:block}
+.days i.on{background:var(--ink);border-color:var(--ink)}
+.days i.today{outline:2px solid var(--signal);outline-offset:1px}
+.daylbl{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);margin-top:4px}
+.type{display:flex;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--rule-2);width:100%}
+.type .body{flex:1;min-width:0}
+.type .n{font-weight:700}
+.type .p{font-size:13px;color:var(--ink-3)}
+.type .pc{font-variant-numeric:tabular-nums;font-weight:700;font-size:17px;text-align:right}
+.type .pc small{display:block;font-weight:500;font-size:11px;color:var(--ink-3)}
+.q-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.timer{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.timer.low{color:var(--bad)}
+.q-type{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.q-prompt{font-size:22px;font-weight:600;line-height:1.3;margin:6px 0 18px;text-wrap:balance}
+.q-prompt .de{font-weight:400;font-size:26px}
+.blank{display:inline-block;min-width:2.6em;border-bottom:2px solid var(--ink);text-align:center}
+.choices{display:flex;flex-direction:column;gap:8px}
+.choice{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border:1.5px solid var(--ink);border-radius:4px;width:100%;background:var(--paper);font-size:16px}
+.choice .l{flex:none;font-weight:700;width:18px;color:var(--ink-3)}
+.choice.right{border-color:var(--ok);box-shadow:inset 4px 0 0 var(--ok)}
+.choice.wrong{border-color:var(--bad);box-shadow:inset 4px 0 0 var(--bad)}
+.choice.picked{background:var(--ink);color:var(--paper)}
+.choice.picked .l{color:var(--paper)}
+.choice[disabled]{cursor:default}
+.artrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.artrow .choice{justify-content:center;font-family:var(--f-de);font-style:italic;font-size:24px;padding:16px 8px}
+.feedback{margin-top:16px;padding:12px 14px;border-left:4px solid var(--ok);background:var(--paper-2);font-size:15px}
+.feedback.no{border-left-color:var(--bad)}
+.feedback b{display:block}
+.tiles{display:flex;flex-wrap:wrap;gap:8px;min-height:50px}
+.tiles.target{border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:14px;min-height:60px;align-content:flex-start}
+.tilebtn{padding:9px 12px;border:1.5px solid var(--ink);border-radius:4px;background:var(--sheet);font-family:var(--f-de);font-size:19px}
+.tilebtn.k{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.score{font-size:64px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.result-line{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0 20px}
+.pass{font-weight:700;color:var(--ok)} .fail{font-weight:700;color:var(--bad)}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:14px 0;border-bottom:1px solid var(--rule-2)}
+.facts b{display:block;font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.facts span{font-size:12px;color:var(--ink-3);line-height:1.25;display:block}
+.sim-nav{display:flex;gap:8px;margin-top:18px}
+.sim-nav .btn{flex:1}
+.dots{display:flex;flex-wrap:wrap;gap:3px;margin:-4px 0 14px}
+.dots i{width:10px;height:10px;border:1px solid var(--rule);display:block}
+.dots i.a{background:var(--ink-3);border-color:var(--ink-3)}
+.dots i.c{background:var(--ink);border-color:var(--ink)}
+
+/* ---------- plan ---------- */
+.phase{position:relative;padding:0 0 26px 34px}
+.phase::before{content:"";position:absolute;left:10px;top:24px;bottom:0;width:2px;background:var(--rule)}
+.phase:last-child::before{display:none}
+.node{position:absolute;left:0;top:2px;width:22px;height:22px;border:2px solid var(--ink);border-radius:50%;background:var(--paper);display:grid;place-items:center;font-size:11px;font-weight:800}
+.phase.cur .node{background:var(--signal);border-color:var(--ink);color:var(--on-signal)}
+.phase.past .node{background:var(--ink);color:var(--paper)}
+.phase .ph{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.phase .pn{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.phase .pm{font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.phase .pf{font-size:14px;color:var(--ink-2);margin-top:2px}
+.phase .list{margin-top:6px}
+.phase:not(.cur) .item{padding:9px 0}
+.pbar{display:flex;gap:3px;margin-top:8px}
+.pbar i{flex:1;height:5px;background:var(--paper-2)}
+.pbar i.on{background:var(--ink)}
+.phase.cur .pbar i.on{background:var(--signal)}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.input{width:100%;min-height:46px;padding:10px 12px;border:1.5px solid var(--ink);border-radius:4px;background:var(--sheet);font-size:16px}
+textarea.input{min-height:76px;resize:vertical}
+textarea.de,.input.de{font-family:var(--f-de);font-size:18px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{padding:7px 11px;border:1.5px solid var(--rule);border-radius:20px;font-size:14px}
+.chips button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.setgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-top:12px}
+.note{font-size:13px;color:var(--ink-3);margin-top:10px;line-height:1.45}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:14px}
+
+/* ---------- fahrschule ---------- */
+.split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border:1.5px solid var(--ink);border-radius:4px}
+.split > div{padding:12px}
+.split > div + div{border-left:1.5px solid var(--ink)}
+.split b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.split span{font-size:14px;color:var(--ink-2)}
+.vocab{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:0 12px;font-size:15px}
+.vocab > div{padding:8px 0;border-bottom:1px solid var(--rule-2);min-width:0}
+.vocab .de{font-size:17px}
+
+/* ---------- tab bar ---------- */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--paper);border-top:2px solid var(--ink);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar ul{list-style:none;margin:0 auto;padding:0;max-width:560px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.tabbar button{width:100%;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 2px 10px;font-size:11.5px;font-weight:600;color:var(--ink-3);position:relative;text-align:center}
+.tabbar svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:square;stroke-linejoin:miter}
+.tabbar button[aria-current="page"]{color:var(--ink)}
+.tabbar button[aria-current="page"]::before{content:"";position:absolute;top:-2px;left:22%;right:22%;height:4px;background:var(--signal)}
+
+/* ---------- sheet + toast ---------- */
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(10,12,14,.45);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:560px;max-height:92%;overflow:auto;background:var(--paper);border-top:2px solid var(--ink);padding:18px var(--gut) calc(18px + env(safe-area-inset-bottom,0px));animation:up .22s ease-out}
+.sheet h3{margin:0 0 4px;font-size:22px;letter-spacing:-.01em}
+.sheet .sub{font-size:14px;color:var(--ink-3);margin-bottom:16px}
+@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:4px;font-size:14px;display:flex;gap:14px;align-items:center;max-width:calc(100% - 32px);white-space:nowrap}
+.toast button{color:var(--signal);font-weight:700}
+
+@media (min-width:700px){
+  h1{font-size:40px}
+  .flip-in{height:360px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="warn"></div>
+  <main id="view"></main>
+</div>
+<nav class="tabbar" aria-label="Seções">
+  <ul id="tabs"></ul>
+</nav>
+<div id="sheet"></div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* =====================================================================
+   Deutschheft — caderno de alemão rumo ao B1, Einbürgerungstest e Führerschein
+   Tudo neste arquivo. Progresso salvo em localStorage.
+   ===================================================================== */
+
+/* ---------------- utilidades ---------------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2, "0");
+const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parseKey = k => { const [y,m,d] = k.split("-").map(Number); return new Date(y, m-1, d); };
+const today = () => keyOf(new Date());
+const addDays = (k, n) => { const d = parseKey(k); d.setDate(d.getDate()+n); return keyOf(d); };
+const diffDays = (a, b) => Math.round((parseKey(b) - parseKey(a)) / 864e5);
+const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
+const shuffle = a => { a = a.slice(); for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; };
+const WD = ["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
+const WD3 = ["dom","seg","ter","qua","qui","sex","sáb"];
+const MO = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const fmtMin = m => m < 60 ? `${m} min` : `${Math.floor(m/60)} h${m%60 ? " " + pad(m%60) : ""}`;
+const fmtDate = k => { const d = parseKey(k); return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`; };
+function isoWeek(d) {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day);
+  const y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return Math.ceil(((t - y0) / 864e5 + 1) / 7);
+}
+const weekStart = k => { const d = parseKey(k); const off = (d.getDay() + 6) % 7; return addDays(k, -off); };
+
+/* ---------------- conteúdo de estudo (exemplos) ---------------- */
+const DECKS = [
+  {id:"arzt",       de:"Arzt",        pt:"Médico e saúde",          code:"ARZ"},
+  {id:"behoerde",   de:"Behörde",     pt:"Órgãos públicos",         code:"BEH"},
+  {id:"arbeit",     de:"Arbeit",      pt:"Trabalho",                code:"ARB"},
+  {id:"wohnung",    de:"Wohnung",     pt:"Moradia",                 code:"WOH"},
+  {id:"verkehr",    de:"Verkehr",     pt:"Transporte público",      code:"VKR"},
+  {id:"einkaufen",  de:"Einkaufen",   pt:"Compras",                 code:"EKF"},
+  {id:"fahrschule", de:"Fahrschule",  pt:"Autoescola e trânsito",   code:"FS"},
+  {id:"saetze",     de:"Meine Sätze", pt:"Frases que me faltaram",  code:"MS"},
+];
+// [deck, artigo, palavra, plural/formas, tradução, exemplo]
+const SAMPLE_CARDS = [
+  ["arzt","der","Termin","die Termine","consulta, horário marcado","Ich möchte einen Termin vereinbaren."],
+  ["arzt","die","Überweisung","die Überweisungen","encaminhamento médico","Brauche ich eine Überweisung vom Hausarzt?"],
+  ["arzt","das","Rezept","die Rezepte","receita médica","Können Sie mir ein Rezept ausstellen?"],
+  ["arzt","die","Krankmeldung","die Krankmeldungen","atestado médico","Ich brauche eine Krankmeldung für drei Tage."],
+  ["arzt","der","Schmerz","die Schmerzen","dor","Ich habe seit gestern starke Schmerzen im Rücken."],
+  ["behoerde","der","Antrag","die Anträge","requerimento, pedido","Ich möchte einen Antrag auf Einbürgerung stellen."],
+  ["behoerde","die","Anmeldung","die Anmeldungen","registro de endereço","Für die Anmeldung brauchen Sie die Wohnungsgeberbestätigung."],
+  ["behoerde","das","Formular","die Formulare","formulário","Bitte füllen Sie das Formular vollständig aus."],
+  ["behoerde","die","Unterlagen","só plural","documentos, papéis","Welche Unterlagen muss ich mitbringen?"],
+  ["behoerde","der","Aufenthaltstitel","die Aufenthaltstitel","título de residência","Mein Aufenthaltstitel läuft im März ab."],
+  ["arbeit","der","Vertrag","die Verträge","contrato","Ich habe den Vertrag gestern unterschrieben."],
+  ["arbeit","die","Besprechung","die Besprechungen","reunião","Die Besprechung fängt um zehn Uhr an."],
+  ["arbeit","das","Gehalt","die Gehälter","salário","Das Gehalt kommt am Ende des Monats."],
+  ["arbeit","der","Urlaub","die Urlaube","férias","Ich nehme im August zwei Wochen Urlaub."],
+  ["arbeit","die","Kollegin","die Kolleginnen","colega (mulher)","Meine Kollegin hilft mir mit der E-Mail."],
+  ["wohnung","die","Miete","die Mieten","aluguel","Die Miete ist am dritten Werktag fällig."],
+  ["wohnung","der","Vermieter","die Vermieter","locador, proprietário","Ich muss den Vermieter wegen der Heizung anrufen."],
+  ["wohnung","die","Nebenkosten","só plural","despesas extras (água, aquecimento)","Die Nebenkosten sind dieses Jahr gestiegen."],
+  ["wohnung","das","Treppenhaus","die Treppenhäuser","escadaria, área comum","Bitte keine Fahrräder im Treppenhaus abstellen."],
+  ["wohnung","der","Müll","sem plural","lixo","Den Müll bringen wir dienstags raus."],
+  ["verkehr","die","Haltestelle","die Haltestellen","parada, ponto","An welcher Haltestelle muss ich aussteigen?"],
+  ["verkehr","der","Fahrschein","die Fahrscheine","bilhete","Haben Sie einen gültigen Fahrschein?"],
+  ["verkehr","das","Gleis","die Gleise","plataforma, via","Der Zug fährt heute von Gleis 7 ab."],
+  ["verkehr","die","Verspätung","die Verspätungen","atraso","Der ICE hat zwanzig Minuten Verspätung."],
+  ["verkehr","der","Anschluss","die Anschlüsse","conexão (de trem)","Ich habe meinen Anschluss verpasst."],
+  ["einkaufen","der","Kassenbon","die Kassenbons","nota, recibo","Brauchen Sie den Kassenbon?"],
+  ["einkaufen","das","Angebot","die Angebote","oferta, promoção","Die Erdbeeren sind diese Woche im Angebot."],
+  ["einkaufen","die","Tüte","die Tüten","sacola","Möchten Sie eine Tüte?"],
+  ["einkaufen","das","Pfand","sem plural no dia a dia","depósito retornável (garrafa)","Auf die Flasche gibt es 25 Cent Pfand."],
+  ["einkaufen","die","Kasse","die Kassen","caixa","Kasse drei ist jetzt auch geöffnet."],
+  ["fahrschule","die","Vorfahrt","sem plural","preferência de passagem","Wer hat an dieser Kreuzung Vorfahrt?"],
+  ["fahrschule","","rechts vor links","regra","quem vem da direita tem preferência","Hier gibt es kein Schild, also gilt rechts vor links."],
+  ["fahrschule","der","Schulterblick","die Schulterblicke","olhar por cima do ombro","Vor dem Abbiegen immer den Schulterblick machen!"],
+  ["fahrschule","","abbiegen","bog ab · ist abgebogen","virar (numa esquina)","Biegen Sie an der nächsten Ampel links ab."],
+  ["fahrschule","die","Ampel","die Ampeln","semáforo","Die Ampel ist gelb – bitte anhalten."],
+  ["fahrschule","die","Kreuzung","die Kreuzungen","cruzamento","Fahren Sie an der Kreuzung geradeaus."],
+  ["fahrschule","der","Fahrstreifen","die Fahrstreifen","faixa (da pista)","Spiegel, Blinker, Schulterblick – dann den Fahrstreifen wechseln."],
+  ["fahrschule","der","Fußgängerüberweg","die Fußgängerüberwege","faixa de pedestres","Am Fußgängerüberweg müssen Sie Fußgänger durchlassen."],
+  ["fahrschule","","einparken","parkte ein · hat eingeparkt","estacionar (manobra)","Bitte parken Sie hier rückwärts ein."],
+  ["fahrschule","die","Geschwindigkeit","die Geschwindigkeiten","velocidade","Innerorts beträgt die Höchstgeschwindigkeit 50 km/h."],
+];
+
+const EX_TYPES = {
+  artikel: {pt:"Artigo certo",   de:"der · die · das"},
+  kasus:   {pt:"Caso certo",     de:"Akkusativ · Dativ"},
+  ordnung: {pt:"Ordem da frase", de:"weil · dass"},
+  perfekt: {pt:"Perfekt",        de:"haben / sein + Partizip II"},
+};
+const EXERCISES = [
+  {id:"a1",type:"artikel",word:"Kühlschrank",ans:"der",why:"Kühlschrank: o gênero vem da última parte, der Schrank."},
+  {id:"a2",type:"artikel",word:"Rechnung",ans:"die",why:"Palavras terminadas em -ung são sempre die."},
+  {id:"a3",type:"artikel",word:"Fahrrad",ans:"das",why:"Composto de das Rad. A última palavra decide o artigo."},
+  {id:"a4",type:"artikel",word:"Brötchen",ans:"das",why:"Diminutivos em -chen e -lein são sempre das."},
+  {id:"a5",type:"artikel",word:"Wohnung",ans:"die",why:"-ung → die. Mesma regra de Rechnung, Zeitung, Meinung."},
+  {id:"k1",type:"kasus",text:"Ich warte auf ___ Bus.",opts:["den","dem","der"],ans:0,tag:"Akkusativ",why:"warten auf + Akkusativ. der Bus → den Bus."},
+  {id:"k2",type:"kasus",text:"Ich wohne seit zwei Jahren in ___ Stadt.",opts:["die","der","den"],ans:1,tag:"Dativ",why:"in + onde? (wo?) pede Dativ. die Stadt → in der Stadt."},
+  {id:"k3",type:"kasus",text:"Kannst du ___ Kollegin die Datei schicken?",opts:["die","der","den"],ans:1,tag:"Dativ",why:"Para quem? A pessoa que recebe vai no Dativ: der Kollegin."},
+  {id:"k4",type:"kasus",text:"Wir brauchen ___ neuen Termin.",opts:["einen","einem","ein"],ans:0,tag:"Akkusativ",why:"brauchen pede objeto direto (Akkusativ). der Termin → einen Termin."},
+  {id:"k5",type:"kasus",text:"Nach ___ Arbeit gehe ich einkaufen.",opts:["die","der","den"],ans:1,tag:"Dativ",why:"nach é sempre Dativ. die Arbeit → nach der Arbeit."},
+  {id:"o1",type:"ordnung",lead:"Ich lerne Deutsch,",tiles:["weil","ich","den Test","bestehen","will"],why:"Depois de weil o verbo conjugado vai para o fim: … bestehen will."},
+  {id:"o2",type:"ordnung",lead:"Ich bleibe heute zu Hause,",tiles:["weil","ich","krank","bin"],why:"weil manda o verbo (bin) para o final da frase."},
+  {id:"o3",type:"ordnung",lead:"Ich glaube,",tiles:["dass","der Bus","heute","später","kommt"],why:"dass também empurra o verbo para o fim: … später kommt."},
+  {id:"o4",type:"ordnung",lead:"Er sagt,",tiles:["dass","er","morgen","keine Zeit","hat"],why:"Sujeito logo depois de dass, verbo no fim."},
+  {id:"o5",type:"ordnung",lead:"Ich komme zu spät,",tiles:["weil","die S-Bahn","Verspätung","hat"],why:"weil + sujeito + … + verbo conjugado no fim."},
+  {id:"p1",type:"perfekt",text:"Ich ___ gestern lange ___. (arbeiten)",opts:["habe … gearbeitet","bin … gearbeitet","habe … arbeitet"],ans:0,why:"arbeiten usa haben; Partizip regular ge-…-t."},
+  {id:"p2",type:"perfekt",text:"Wir ___ am Wochenende nach Hamburg ___. (fahren)",opts:["haben … gefahren","sind … gefahren","sind … gefahrt"],ans:1,why:"Verbos de deslocamento usam sein. fahren → gefahren (irregular)."},
+  {id:"p3",type:"perfekt",text:"Sie ___ den Termin ___. (vergessen)",opts:["hat … vergesst","ist … vergessen","hat … vergessen"],ans:2,why:"Prefixo ver- não recebe ge-. vergessen → vergessen, com haben."},
+  {id:"p4",type:"perfekt",text:"Ich ___ um sieben Uhr ___. (aufstehen)",opts:["bin … aufgestanden","habe … aufgestanden","bin … aufgesteht"],ans:0,why:"Mudança de estado → sein. Separável: auf-ge-standen."},
+  {id:"p5",type:"perfekt",text:"Hast du die Rechnung schon ___? (bezahlen)",opts:["gebezahlt","bezahlt","bezahlen"],ans:1,why:"Prefixo be- não recebe ge-: bezahlt."},
+];
+
+// Perguntas no formato do catálogo oficial do BAMF (exemplos). ans = índice da resposta certa.
+const EINB = [
+  {id:"e1",q:"In Deutschland dürfen Menschen offen etwas gegen die Regierung sagen, weil …",opts:["hier Religionsfreiheit gilt.","die Menschen Steuern zahlen.","die Menschen das Wahlrecht haben.","hier Meinungsfreiheit gilt."],ans:3,pt:"Na Alemanha as pessoas podem criticar o governo abertamente porque…"},
+  {id:"e2",q:"Wie heißt die deutsche Verfassung?",opts:["Volksgesetz","Bundesgesetz","Deutsches Gesetz","Grundgesetz"],ans:3,pt:"Como se chama a constituição alemã?"},
+  {id:"e3",q:"Wer wählt in Deutschland den Bundeskanzler / die Bundeskanzlerin?",opts:["der Bundesrat","die Bundesversammlung","das Volk","der Bundestag"],ans:3,pt:"Quem elege o chanceler federal?"},
+  {id:"e4",q:"Wie viele Bundesländer hat die Bundesrepublik Deutschland?",opts:["14","15","16","17"],ans:2,pt:"Quantos estados federais a Alemanha tem?"},
+  {id:"e5",q:"Wann wurde die Mauer in Berlin gebaut?",opts:["1953","1956","1959","1961"],ans:3,pt:"Quando o Muro de Berlim foi construído?"},
+  {id:"e6",q:"Was feiert man in Deutschland am 3. Oktober?",opts:["Tag der Arbeit","Tag der Deutschen Einheit","Tag des Grundgesetzes","Tag der Republik"],ans:1,pt:"O que se comemora na Alemanha em 3 de outubro?"},
+  {id:"e7",q:"Wie viele Jahre dauert in der Regel die Wahlperiode des Deutschen Bundestages?",opts:["2 Jahre","4 Jahre","6 Jahre","8 Jahre"],ans:1,pt:"Quantos anos dura normalmente a legislatura do Bundestag?"},
+  {id:"e8",q:"Welche Farben hat die Flagge der Bundesrepublik Deutschland?",opts:["schwarz-rot-gold","rot-weiß-schwarz","schwarz-rot-grün","schwarz-gelb-rot"],ans:0,pt:"Quais são as cores da bandeira da Alemanha?"},
+  {id:"e9",q:"Wer ist das Staatsoberhaupt der Bundesrepublik Deutschland?",opts:["der Bundeskanzler / die Bundeskanzlerin","der Bundespräsident / die Bundespräsidentin","der Bundesratspräsident / die Bundesratspräsidentin","der Bundestagspräsident / die Bundestagspräsidentin"],ans:1,pt:"Quem é o chefe de Estado da Alemanha?"},
+  {id:"e10",q:"Was geschah am 9. November 1989 in Deutschland?",opts:["Der Zweite Weltkrieg endete.","Die Mauer in Berlin wurde gebaut.","Die Mauer in Berlin fiel.","Die Bundesrepublik wurde gegründet."],ans:2,pt:"O que aconteceu em 9 de novembro de 1989?"},
+  {id:"e11",q:"Ab welchem Alter darf man in Deutschland an der Wahl zum Deutschen Bundestag teilnehmen?",opts:["16","17","18","20"],ans:2,pt:"A partir de que idade se pode votar nas eleições do Bundestag?"},
+  {id:"e12",q:"Wie heißt das deutsche Parlament?",opts:["Volkskammer","Bundestag","Bundesversammlung","Bundesregierung"],ans:1,pt:"Como se chama o parlamento alemão?"},
+  {id:"e13",q:"Welches Recht gehört zu den Grundrechten in Deutschland?",opts:["Waffenbesitz","Faustrecht","Glaubens- und Gewissensfreiheit","Selbstjustiz"],ans:2,pt:"Qual direito faz parte dos direitos fundamentais?"},
+  {id:"e14",q:"Wann wurde die Bundesrepublik Deutschland gegründet?",opts:["1939","1945","1949","1951"],ans:2,pt:"Quando a República Federal da Alemanha foi fundada?"},
+  {id:"e15",q:"In Deutschland sind die meisten Erwerbstätigen …",opts:["in kleinen Familienunternehmen beschäftigt.","ehrenamtlich für ein Bundesland tätig.","selbstständig mit einer eigenen Firma tätig.","bei einer Firma oder Behörde beschäftigt."],ans:3,pt:"Na Alemanha, a maioria das pessoas que trabalham…"},
+];
+
+const PHASES = [
+  {id:"p1",name:"Base A2",months:"out – nov 2026",from:"2026-10-01",to:"2026-11-30",
+   grammar:"Perfekt com haben e sein; Akkusativ × Dativ",gShort:"Perfekt e casos",skill:"apresentar-se, rotina e trabalho",sShort:"falar de si em 2 min",
+   ms:[["p1a","Perfekt dos 40 verbos mais usados"],["p1b","Artigos no Akkusativ e Dativ sem olhar a tabela"],["p1c","300 palavras ativas nos cartões"],["p1d","Marcar uma consulta por telefone em alemão"],["p1e","Ouvir um episódio inteiro de podcast sem pausar"]]},
+  {id:"p2",name:"A2 firme",months:"dez 2026 – jan 2027",from:"2026-12-01",to:"2027-01-31",
+   grammar:"Nebensätze com weil, dass, wenn; Präteritum dos modais",gShort:"orações subordinadas",skill:"e-mails curtos e dar opinião",sShort:"escrever um e-mail",
+   ms:[["p2a","Frases com weil, dass e wenn sem pensar na ordem"],["p2b","Präteritum de sein, haben e dos verbos modais"],["p2c","600 palavras ativas nos cartões"],["p2d","Fazer um Modellsatz A2 completo"],["p2e","Einbürgerungstest: passar pelo catálogo inteiro uma vez"]]},
+  {id:"p3",name:"Rumo ao B1",months:"fev – mar 2027",from:"2027-02-01",to:"2027-03-31",
+   grammar:"Konjunktiv II (würde, hätte, wäre) e Relativsätze",gShort:"Konjunktiv II",skill:"carta formal e planejar algo juntos",sShort:"carta formal",
+   ms:[["p3a","Inscrever-se na prova B1 (DTZ, Goethe ou telc)"],["p3b","Escrever 6 cartas formais com correção"],["p3c","Konjunktiv II para pedidos educados"],["p3d","Relativsätze no Nominativ, Akkusativ e Dativ"],["p3e","Simulado do Einbürgerungstest com 30 ou mais acertos"]]},
+  {id:"p4",name:"Reta final",months:"abr – mai 2027",from:"2027-04-01",to:"2027-05-31",
+   grammar:"revisão da lista pessoal de erros",gShort:"lista de erros",skill:"simulados cronometrados",sShort:"simulado parcial",
+   ms:[["p4a","3 Modellsätze B1 completos, com tempo"],["p4b","Fazer o Einbürgerungstest"],["p4c","Lista pessoal de 20 erros revisada"],["p4d","Separar documentos para a naturalização"],["p4e","Prova B1"]]},
+];
+
+const FS_STEPS = [
+  ["f1","Sehtest","Teste de visão numa ótica, válido por 2 anos"],
+  ["f2","Erste-Hilfe-Kurs","Curso de primeiros socorros, 9 unidades em um dia"],
+  ["f3","Biometrisches Passfoto","Foto biométrica para o pedido"],
+  ["f4","Fahrschule anmelden","Escolher a autoescola e assinar o contrato"],
+  ["f5","Antrag auf Fahrerlaubnis","Pedido na Führerscheinstelle, leva semanas"],
+  ["f6","Theorieunterricht","12 aulas de Grundstoff + 2 de Klasse B, 90 min cada"],
+  ["f7","Theorieprüfung","Na TÜV ou DEKRA, em português. Máx. 10 pontos de erro"],
+  ["f8","Übungsstunden","Aulas práticas em alemão, até se sentir segura"],
+  ["f9","Sonderfahrten","5 × Überland, 4 × Autobahn, 3 × Nacht"],
+  ["f10","Praktische Prüfung","Cerca de 55 min, instruções em alemão"],
+];
+
+const KINDS = {podcast:"Podcast",cards:"Flashcards",estudo:"Estudo formal",conversa:"Conversa real",exercicios:"Exercícios",outro:"Outro"};
+const QUICK = [["podcast",15,"Podcast","15 min"],["cards",10,"Flashcards","10 min"],["estudo",60,"Estudo","1 h"],["conversa",15,"Conversa real","15 min"]];
+const PLACES = ["no médico","no trabalho","no mercado","na Behörde","no transporte","em casa","com vizinhos","outro lugar"];
+
+/* ---------------- estado + armazenamento ---------------- */
+const KEY = "deutschheft.v1";
+let storageOk = true;
+
+function seed() {
+  const t = today();
+  const cards = SAMPLE_CARDS.map(([deck,art,word,pl,pt,ex]) => ({id:uid(),deck,art,word,pl,pt,ex,sample:true,due:null,ivl:0,ease:2.5,reps:0,lapses:0}));
+  // registros de tempo de exemplo nos dias anteriores desta semana
+  const logs = [];
+  const ws = weekStart(t);
+  const pattern = [[["podcast",30],["cards",10],["conversa",15]],[["estudo",60],["podcast",30]],[["podcast",25],["cards",15]],[["podcast",30],["conversa",20],["cards",10]],[["podcast",30],["cards",10]],[["estudo",60],["cards",15],["conversa",30]]];
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(ws, i); if (d >= t) break;
+    (pattern[i] || []).forEach(([kind,min]) => logs.push({id:uid(),d,min,kind,sample:true}));
+  }
+  const diary = [
+    {id:uid(),date:addDays(t,-1),place:"no mercado",de:"Kann ich mit Karte zahlen?",pt:"Posso pagar com cartão?",sample:true},
+    {id:uid(),date:addDays(t,-3),place:"no trabalho",de:"Könnten Sie das bitte noch einmal langsamer sagen?",pt:"Poderia repetir mais devagar?",sample:true},
+    {id:uid(),date:addDays(t,-6),place:"no médico",de:"Ich hätte gern einen Termin nächste Woche.",pt:"Queria uma consulta semana que vem.",sample:true},
+    {id:uid(),date:addDays(t,-9),place:"no transporte",de:"",pt:"Esse trem para em todas as estações?",sample:true},
+  ];
+  return {v:1,created:t,examDate:"2027-05-15",goalMin:600,tab:"hoje",
+    cards,logs,diary,daily:{},milestones:{},fs:{f1:true},practice:[],exStats:{},einb:{},sims:[]};
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      const base = seed();
+      for (const k in base) if (d[k] === undefined) d[k] = base[k];
+      return d;
+    }
+  } catch (e) { storageOk = false; }
+  return seed();
+}
+function save() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(S));
+    if (!storageOk) { storageOk = true; renderWarn(); }
+  } catch (e) {
+    storageOk = false; renderWarn();
+  }
+}
+let S = load();
+const UI = {cardsView:"decks", trView:"ex", sess:null, ex:null, eb:null, sim:null, confirm:null, lastLog:null};
+
+/* ---------------- cálculos ---------------- */
+const isDue = (c, t = today()) => c.due === null || c.due <= t;
+const minutesOn = d => S.logs.filter(l => l.d === d).reduce((a,l) => a + l.min, 0);
+function weekDays() { const ws = weekStart(today()); return Array.from({length:7}, (_,i) => addDays(ws, i)); }
+const weekMinutes = () => weekDays().reduce((a,d) => a + minutesOn(d), 0);
+function currentPhase() {
+  const t = today();
+  return PHASES.find(p => t >= p.from && t <= p.to) || (t < PHASES[0].from ? PHASES[0] : PHASES[PHASES.length-1]);
+}
+function formalLeft() {
+  const t = today(); let n = 0;
+  const end = S.examDate; let d = t;
+  for (let i = 0; i < 800 && d < end; i++) { const w = parseKey(d).getDay(); if (w === 2 || w === 6) n++; d = addDays(d, 1); }
+  return n;
+}
+function streak() {
+  const set = new Set(S.practice); let d = today();
+  if (!set.has(d)) d = addDays(d, -1);
+  let n = 0; while (set.has(d)) { n++; d = addDays(d, -1); }
+  return n;
+}
+function deckStats(deckId) {
+  const t = today(); const cs = S.cards.filter(c => deckId === "all" || c.deck === deckId);
+  return {total:cs.length, newC:cs.filter(c => c.due === null).length, due:cs.filter(c => c.due !== null && c.due <= t).length};
+}
+const NEW_PER_SESSION = 10;
+function buildQueue(deckId) {
+  const t = today(); const cs = S.cards.filter(c => (deckId === "all" || c.deck === deckId));
+  const due = shuffle(cs.filter(c => c.due !== null && c.due <= t));
+  const fresh = cs.filter(c => c.due === null).slice(0, NEW_PER_SESSION);
+  return [...due, ...fresh].map(c => c.id);
+}
+function todayQueueSize() { return deckStats("all").due + Math.min(NEW_PER_SESSION, deckStats("all").newC); }
+
+/* repetição espaçada (SM-2 simplificado). r: 0 errei, 1 difícil, 2 bom, 3 fácil */
+function schedule(c, r) {
+  const t = today();
+  if (r === 0) { c.lapses++; c.ease = Math.max(1.3, c.ease - 0.2); c.ivl = 0; c.reps = 0; c.due = t; return 0; }
+  let ivl;
+  if (c.reps === 0) ivl = r === 3 ? 4 : 1;
+  else if (c.reps === 1) ivl = r === 1 ? 2 : r === 2 ? 3 : 6;
+  else ivl = r === 1 ? Math.max(c.ivl + 1, Math.round(c.ivl * 1.2)) : r === 2 ? Math.max(c.ivl + 1, Math.round(c.ivl * c.ease)) : Math.max(c.ivl + 2, Math.round(c.ivl * c.ease * 1.3));
+  if (r === 1) c.ease = Math.max(1.3, c.ease - 0.15);
+  if (r === 3) c.ease += 0.15;
+  c.ivl = ivl; c.reps++; c.due = addDays(t, ivl); return ivl;
+}
+const ivlLabel = n => n === 0 ? "agora" : n < 30 ? `${n} d` : n < 365 ? `${Math.round(n/30)} mês` : `${(n/365).toFixed(1)} ano`;
+
+/* ---------------- ícones ---------------- */
+const ICON = {
+  hoje:'<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><rect x="11" y="13" width="4" height="4" fill="currentColor" stroke="none"/></svg>',
+  cartoes:'<svg viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="14" height="12"/><path d="M7 4.5h13.5v11.5"/></svg>',
+  treino:'<svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg>',
+  carteira:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2"/><path d="M3.8 11.2l6.3 0.8M20.2 11.2l-6.3 0.8M12 14v6.5"/></svg>',
+  plano:'<svg viewBox="0 0 24 24"><path d="M5 20.5V3.5"/><path d="M5 4.5h12l-2.5 4 2.5 4H5"/></svg>',
+};
+const TABS = [["hoje","Hoje"],["cartoes","Cartões"],["treino","Treino"],["carteira","Carteira"],["plano","Plano"]];
+
+/* ---------------- render: shell ---------------- */
+function renderWarn() {
+  $("#warn").innerHTML = storageOk ? "" :
+    `<div class="warn" role="alert"><div><b>Progresso não está sendo salvo.</b> O navegador bloqueou o armazenamento (modo privado ou memória cheia). Tudo funciona, mas some ao fechar a página. Saia do modo privado ou libere espaço para salvar.</div></div>`;
+}
+function renderTabs() {
+  $("#tabs").innerHTML = TABS.map(([id,l]) =>
+    `<li><button data-act="tab" data-v="${id}" ${S.tab === id ? 'aria-current="page"' : ""}>${ICON[id]}<span>${l}</span></button></li>`).join("");
+}
+function render() {
+  stopTick();
+  renderTabs(); renderWarn();
+  const v = $("#view");
+  const map = {hoje:vHoje, cartoes:vCartoes, treino:vTreino, carteira:vCarteira, plano:vPlano};
+  v.innerHTML = (map[S.tab] || vHoje)();
+  startTickIfNeeded();
+}
+function head(eyebrow, title) {
+  return `<header class="head"><span class="eyebrow">${eyebrow}</span><h1>${title}</h1></header>`;
+}
+const artSpan = a => a ? `<span class="art art-${a}">${a}</span>` : "";
+const sampleTag = x => x ? ` <span class="tag" title="Dado de exemplo">exemplo</span>` : "";
+const checkSvg = '<svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3.2L13 4.8"/></svg>';
+
+/* ---------------- HOJE ---------------- */
+function dayPlan(dow, ph) {
+  const q = todayQueueSize();
+  const P = {
+    pod:{id:"pod",t:"Podcast no trajeto",d:"30 min de Easy German ou Slow German"},
+    cards:{id:"cards",t:"Revisar flashcards",d:q ? `${q} cartões para hoje` : "Nada pendente. Adicione as frases do dia.",go:"cards",gl:"Revisar"},
+    ex:{id:"ex",t:"Exercícios rápidos",d:"Uma sessão de 5 min mantém a sequência",go:"ex",gl:"Começar"},
+    talk:{id:"talk",t:"Uma conversa real",d:"Depois, anote no diário o que faltou dizer",go:"diary",gl:"Diário"},
+    ebt:{id:"ebt",t:"Einbürgerungstest",d:"10 perguntas no modo treino",go:"einb",gl:"Treinar"},
+  };
+  if (dow === 2) return {note:"terça · estudo formal", items:[
+    {id:"formal",t:"Estudo formal · 1 h",d:`Gramática da fase: ${ph.grammar}`,agenda:[["00–15","revisar cartões"],["15–45",ph.gShort],["45–60","exercícios do tema"]]}, P.pod, P.talk]};
+  if (dow === 6) return {note:"sábado · estudo formal", items:[
+    {id:"formal",t:"Estudo formal · 1 h",d:`Escrita e fala: ${ph.skill}`,agenda:[["00–20",ph.sShort],["20–45","escrever e ler em voz alta"],["45–60","Einbürgerungstest"]]}, P.cards, P.talk]};
+  if (dow === 0) return {note:"domingo · dia leve", items:[P.cards, P.ebt, {id:"reread",t:"Reler o diário da semana",d:"Leia em voz alta as frases novas",go:"diary",gl:"Diário"}]};
+  return {note:`${WD[dow]} · rotina`, items:[P.pod, P.cards, P.ex, P.talk]};
+}
+function vHoje() {
+  const t = today(), now = new Date(), dow = now.getDay(), ph = currentPhase();
+  const days = Math.max(0, diffDays(t, S.examDate));
+  const weeks = Math.floor(days / 7);
+  const plan = dayPlan(dow, ph);
+  const done = S.daily[t] || {};
+  const tMin = minutesOn(t), wMin = weekMinutes(), goal = S.goalMin;
+  const digits = String(days).padStart(3, "0").split("");
+  const phIdx = PHASES.indexOf(ph) + 1;
+  const todayLogs = S.logs.filter(l => l.d === t).slice().reverse();
+
+  return `
+  ${head(`${WD[dow]}, ${now.getDate()} de ${MO[now.getMonth()]} · KW ${isoWeek(now)}`, "Hoje")}
+  <section class="board" aria-label="Contagem regressiva para a prova B1">
+    <div class="board-top"><span>Prova B1 · DTZ / Goethe / telc</span><span class="yl num">${fmtDate(S.examDate)}</span></div>
+    <div class="board-main">
+      <div class="flaps" aria-hidden="true">${digits.map(d => `<span class="flap">${d}</span>`).join("")}</div>
+      <div class="board-unit">dias<small>até a prova</small></div>
+    </div>
+    <div class="board-grid">
+      <div><b>${weeks}</b><span>semanas</span></div>
+      <div><b>${formalLeft()}</b><span>aulas formais (ter + sáb)</span></div>
+      <div><b>${phIdx}/4</b><span>fase atual: ${ph.name}</span></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h"><h2>Plano de hoje</h2><span class="aside">${plan.note}</span></div>
+    <ul class="list">
+      ${plan.items.map(it => `
+      <li class="item ${done[it.id] ? "done" : ""}">
+        <button class="chk" data-act="dayCheck" data-v="${it.id}" aria-pressed="${!!done[it.id]}" aria-label="Marcar ${esc(it.t)}">${checkSvg}</button>
+        <div class="body"><div class="t">${esc(it.t)}</div><div class="d">${esc(it.d)}</div>
+          ${it.agenda ? `<div class="agenda">${it.agenda.map(([a,b]) => `<span>${a}</span><span>${esc(b)}</span>`).join("")}</div>` : ""}
+        </div>
+        ${it.go ? `<button class="go" data-act="go" data-v="${it.go}">${it.gl} →</button>` : ""}
+      </li>`).join("")}
+    </ul>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h"><h2>Tempo de alemão</h2><span class="aside">meta ${fmtMin(goal)} / semana</span></div>
+    <div class="meters">
+      <div class="meter"><div class="lbl">Hoje</div><div class="val">${tMin}<small> min</small></div></div>
+      <div class="meter"><div class="lbl">Semana</div><div class="val">${Math.floor(wMin/60)}<small>h</small>${pad(wMin%60)}<small> / ${String(goal/60).replace(".",",")} h</small></div>
+        <div class="ruler ${wMin >= goal ? "full" : ""}" role="img" aria-label="${Math.round(wMin/goal*100)}% da meta semanal"><i style="width:${Math.min(100, wMin/goal*100)}%"></i></div>
+      </div>
+    </div>
+    <div class="quick">
+      ${QUICK.map(([k,m,l,ml]) => `<button class="qb" data-act="log" data-k="${k}" data-m="${m}"><span class="k">${l}</span><span class="m">+${ml}</span></button>`).join("")}
+    </div>
+    <div class="row-btns" style="margin-top:8px"><button class="btn ghost" data-act="logOther">Outro tempo…</button></div>
+    ${weekChart()}
+    ${todayLogs.length ? `<div class="loglist">${todayLogs.map(l => `<div class="logrow"><span>${KINDS[l.kind] || l.kind}</span><span class="num">${fmtMin(l.min)} <button class="link" data-act="delLog" data-v="${l.id}" style="margin-left:10px">remover</button></span></div>`).join("")}</div>` : ""}
+  </section>`;
+}
+function weekChart() {
+  const ds = weekDays(), t = today();
+  const vals = ds.map(minutesOn);
+  const daily = Math.round(S.goalMin / 7);
+  const max = Math.max(daily * 1.5, ...vals);
+  const top = Math.ceil(max / 30) * 30;
+  const W = 320, H = 172, padL = 4, padR = 4, base = 120, topY = 18;
+  const bw = (W - padL - padR) / 7;
+  const y = v => base - (v / top) * (base - topY);
+  const hasSample = S.logs.some(l => l.sample && ds.includes(l.d));
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Minutos por dia nesta semana">`;
+  ds.forEach((d,i) => {
+    const x = padL + i*bw + bw*0.18, w = bw*0.64, v = vals[i];
+    s += `<rect class="track" x="${x}" y="${topY}" width="${w}" height="${base-topY}"/>`;
+    if (v > 0) s += `<rect class="bar ${d === t ? "today" : ""}" x="${x}" y="${y(v)}" width="${w}" height="${base - y(v)}"/>`;
+    if (v > 0) s += `<text class="tv" x="${x + w/2}" y="${y(v) - 4}" text-anchor="middle">${v}</text>`;
+    s += `<text x="${x + w/2}" y="${base + 16}" text-anchor="middle" ${d === t ? 'class="tv"' : ""}>${WD3[parseKey(d).getDay()]}</text>`;
+  });
+  s += `<line class="goal" x1="0" x2="${W}" y1="${y(daily)}" y2="${y(daily)}"/>`;
+  s += `<text x="${W - 2}" y="${H - 4}" text-anchor="end">linha tracejada: ${daily} min/dia</text>`;
+  s += `<text x="2" y="${H - 4}">min por dia</text></svg>`;
+  return `<div class="chart">${s}${hasSample ? `<p class="note">Os dias anteriores desta semana trazem registros de exemplo. Remova em Plano → Dados.</p>` : ""}</div>`;
+}
+
+/* ---------------- CARTÕES ---------------- */
+function vCartoes() {
+  if (UI.sess) return vSession();
+  const dCount = S.diary.length;
+  const top = `${head("Karteikarten · repetição espaçada", "Cartões")}
+    <div class="seg" role="group"><button data-act="cardsView" data-v="decks" aria-pressed="${UI.cardsView === "decks"}">Baralhos</button><button data-act="cardsView" data-v="diary" aria-pressed="${UI.cardsView === "diary"}">Diário de frases <span class="num">${dCount}</span></button></div>
+    <button class="btn signal block" data-act="missed">+ Não soube dizer isso hoje</button>`;
+  if (UI.cardsView === "diary") return top + vDiary();
+  const all = deckStats("all");
+  const q = todayQueueSize();
+  return `${top}
+  <div class="duebar">
+    <div><div style="font-weight:700">${q ? `${q} cartões para hoje` : "Tudo revisado por hoje"}</div><div class="small muted num">${all.due} revisões · ${Math.min(NEW_PER_SESSION, all.newC)} novos · ${all.total} no total</div></div>
+    ${q ? `<button class="btn solid" data-act="study" data-v="all">Revisar</button>` : ""}
+  </div>
+  <section>
+    <div class="sec-h"><h2>Baralhos</h2><span class="aside">revisar · novos</span></div>
+    ${DECKS.map(d => { const st = deckStats(d.id); if (d.id === "saetze" && !st.total) return "";
+      const n = st.due + Math.min(NEW_PER_SESSION, st.newC);
+      return `<button class="deck" data-act="study" data-v="${d.id}" ${n ? "" : 'aria-disabled="true"'}>
+        <span class="code">${d.code}</span>
+        <span class="body"><span class="n" style="display:block">${d.de}</span><span class="p">${d.pt} · <span class="num">${st.total}</span> cartões</span></span>
+        <span class="counts"><span class="${st.due ? "" : "zero"}"><b>${st.due}</b></span><span class="${st.newC ? "" : "zero"}"><b>${Math.min(NEW_PER_SESSION, st.newC)}</b></span></span>
+      </button>`; }).join("")}
+    <p class="note">Os ${SAMPLE_CARDS.length} cartões iniciais são exemplos. Frases que você anotar como “não soube dizer” viram cartões em Meine Sätze.</p>
+  </section>`;
+}
+function vSession() {
+  const s = UI.sess;
+  if (s.i >= s.queue.length) {
+    const tomorrow = S.cards.filter(c => c.due && c.due <= addDays(today(), 1) && c.due > today()).length;
+    const deck = DECKS.find(d => d.id === s.deck);
+    return `${head(deck ? deck.de : "Todos os baralhos", "Revisão concluída")}
+      <div class="facts"><div><b>${s.seen}</b><span>respostas</span></div><div><b>${s.wrong}</b><span>erros</span></div><div><b>${tomorrow}</b><span>voltam amanhã</span></div></div>
+      <div class="row-btns" style="margin-top:20px"><button class="btn solid" data-act="endSess">Voltar aos baralhos</button><button class="btn" data-act="logCardsSess">Registrar ${Math.max(1, Math.round((Date.now() - s.start)/60000))} min</button></div>`;
+  }
+  const c = S.cards.find(x => x.id === s.queue[s.i]);
+  if (!c) { s.i++; return vSession(); }
+  const deck = DECKS.find(d => d.id === c.deck) || DECKS[0];
+  const long = (c.art + c.word).length > 16;
+  const plLabel = c.art ? "Plural" : "Formas";
+  const prev = r => ivlLabel(schedule({...c}, r));
+  return `
+  <div class="sess-top"><button class="link" data-act="endSess">← Encerrar</button><span class="num small muted">${s.i + 1} / ${s.queue.length}</span></div>
+  <div class="prog"><i style="width:${(s.i / s.queue.length) * 100}%"></i></div>
+  <div class="flip ${s.flipped ? "on" : ""}" id="flip" data-act="flip" role="button" tabindex="0" aria-label="Virar cartão">
+    <div class="flip-in">
+      <div class="face front">
+        <div class="face-top"><span><span class="code" style="height:20px;min-width:30px;font-size:11px">${deck.code}</span> ${deck.de}</span><span>${c.sample ? "exemplo" : c.due === null ? "novo" : ""}</span></div>
+        <div class="word ${long ? "long" : ""}">${artSpan(c.art)}${esc(c.word)}</div>
+        <div class="hint">Diga em voz alta o que significa. Toque para virar.</div>
+      </div>
+      <div class="face back">
+        <div class="face-top"><span>${deck.de}</span><span>${c.lapses ? `errou ${c.lapses}×` : ""}</span></div>
+        <div class="w2">${artSpan(c.art)}${esc(c.word)}</div>
+        <div class="pt">${esc(c.pt)}</div>
+        <dl class="kv">
+          ${c.pl ? `<dt>${plLabel}</dt><dd class="de" style="font-size:16px">${esc(c.pl)}</dd>` : ""}
+          ${c.ex ? `<dt>Exemplo</dt><dd class="exs">${esc(c.ex)}</dd>` : ""}
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div class="rate" id="rate" ${s.flipped ? "" : "hidden"}>
+    <button data-act="rate" data-v="0"><b>Errei</b><span>${prev(0)}</span></button>
+    <button data-act="rate" data-v="1"><b>Difícil</b><span>${prev(1)}</span></button>
+    <button data-act="rate" data-v="2"><b>Bom</b><span>${prev(2)}</span></button>
+    <button data-act="rate" data-v="3"><b>Fácil</b><span>${prev(3)}</span></button>
+  </div>
+  <div class="flip-cta" id="flipcta" ${s.flipped ? "hidden" : ""}><button class="btn block" data-act="flip">Mostrar resposta</button></div>`;
+}
+function vDiary() {
+  if (!S.diary.length) return `<p class="note" style="margin-top:20px">Nenhuma frase ainda. Toda vez que aprender algo na rua, no trabalho ou no médico, anote aqui.</p>
+    <button class="btn block" style="margin-top:10px" data-act="diaryNew">Anotar frase aprendida</button>`;
+  const items = S.diary.slice().sort((a,b) => b.date.localeCompare(a.date));
+  let out = `<div class="row-btns" style="margin-top:10px"><button class="btn ghost" data-act="diaryNew">Anotar frase aprendida</button></div>`;
+  let lastM = "";
+  items.forEach(e => {
+    const d = parseKey(e.date); const m = `${MO[d.getMonth()]} ${d.getFullYear()}`;
+    if (m !== lastM) { out += `<div class="month">${m}</div>`; lastM = m; }
+    out += `<button class="entry" data-act="diaryEdit" data-v="${e.id}">
+      <span class="date">${pad(d.getDate())}.${pad(d.getMonth()+1)}<small>${WD3[d.getDay()]}</small></span>
+      <span style="min-width:0">
+        ${e.de ? `<span class="de" style="display:block">${esc(e.de)}</span>` : `<span class="missing" style="display:block">Falta a frase em alemão. Toque para completar.</span>`}
+        <span class="pt" style="display:block">${esc(e.pt)}</span>
+        <span class="meta"><span class="place">${esc(e.place)}</span>${e.cardId ? `<span class="place">cartão criado</span>` : ""}${e.sample ? `<span class="tag">exemplo</span>` : ""}</span>
+      </span></button>`;
+  });
+  return out;
+}
+
+/* ---------------- TREINO ---------------- */
+function vTreino() {
+  if (UI.ex) return vExSession();
+  if (UI.eb) return vEbTrain();
+  if (UI.sim) return vSim();
+  const top = `${head(UI.trView === "ex" ? "Übungen · sessões de 5 minutos" : "Leben in Deutschland · Einbürgerungstest", "Treino")}
+    <div class="seg" role="group"><button data-act="trView" data-v="ex" aria-pressed="${UI.trView === "ex"}">Exercícios</button><button data-act="trView" data-v="einb" aria-pressed="${UI.trView === "einb"}">Einbürgerungstest</button></div>`;
+  return top + (UI.trView === "ex" ? vExHome() : vEbHome());
+}
+function vExHome() {
+  const st = streak(), t = today(), set = new Set(S.practice);
+  const ds = Array.from({length:28}, (_,i) => addDays(t, i - 27));
+  return `
+  <div class="streak"><span class="big">${st}</span><span class="lab"><b>${st === 1 ? "dia seguido" : "dias seguidos"}</b><br><span class="small muted">${set.has(t) ? "Hoje já conta." : "Pratique hoje para manter."}</span></span></div>
+  <div class="days" aria-label="Últimos 28 dias de prática">${ds.map(d => `<i class="${set.has(d) ? "on" : ""} ${d === t ? "today" : ""}" title="${fmtDate(d)}"></i>`).join("")}</div>
+  <div class="daylbl num"><span>${fmtDate(ds[0]).slice(0,5)}</span><span>hoje</span></div>
+  <button class="btn solid block" style="margin-top:18px" data-act="exStart" data-v="mix">Começar sessão de 5 min</button>
+  <section class="sec">
+    <div class="sec-h"><h2>Por tipo</h2><span class="aside">acertos</span></div>
+    ${Object.entries(EX_TYPES).map(([k,v]) => { const s = S.exStats[k] || {r:0,w:0}; const tot = s.r + s.w;
+      return `<button class="type" data-act="exStart" data-v="${k}"><span class="body"><span class="n" style="display:block">${v.pt}</span><span class="p">${v.de} · ${EXERCISES.filter(e => e.type === k).length} exercícios</span></span>
+      <span class="pc">${tot ? Math.round(s.r / tot * 100) + "%" : "—"}<small>${tot ? `${s.r} de ${tot}` : "sem dados"}</small></span></button>`; }).join("")}
+    <p class="note">Os ${EXERCISES.length} exercícios são exemplos. Cada sessão termina em 5 minutos ou quando acabam as perguntas, e o tempo entra no registro da semana.</p>
+  </section>`;
+}
+function startEx(kind) {
+  const pool = EXERCISES.filter(e => kind === "mix" || e.type === kind);
+  UI.ex = {items: shuffle(pool).slice(0, kind === "mix" ? 10 : pool.length), i:0, ans:null, right:0, start:Date.now(), end:Date.now() + 5*60000, picked:[], order:null, over:false};
+  prepOrder();
+}
+function prepOrder() {
+  const x = UI.ex, e = x.items[x.i];
+  if (e && e.type === "ordnung") { let o; do { o = shuffle(e.tiles.map((_,i) => i)); } while (o.every((v,i) => v === i)); x.order = o; x.picked = []; }
+}
+function vExSession() {
+  const x = UI.ex;
+  if (x.over || x.i >= x.items.length) return vExResult();
+  const e = x.items[x.i], T = EX_TYPES[e.type];
+  const answered = x.ans !== null;
+  let body = "";
+  if (e.type === "artikel") {
+    body = `<div class="q-prompt">Qual é o artigo?<br><span class="de"><span class="blank">${answered ? artSpan(e.ans) : "&nbsp;"}</span> ${esc(e.word)}</span></div>
+    <div class="artrow">${["der","die","das"].map(a => {
+      let cls = ""; if (answered) { if (a === e.ans) cls = "right"; else if (a === x.ans) cls = "wrong"; }
+      return `<button class="choice ${cls}" data-act="exPick" data-v="${a}" ${answered ? "disabled" : ""}><span class="art art-${a}">${a}</span></button>`; }).join("")}</div>`;
+  } else if (e.type === "kasus" || e.type === "perfekt") {
+    const parts = e.text.split("___");
+    let sentence;
+    if (answered) {
+      const fill = e.opts[e.ans].split(" … ");
+      sentence = parts.map((p,i) => esc(p) + (i < parts.length - 1 ? `<span class="blank"><b>${esc(fill[i] ?? fill[0])}</b></span>` : "")).join("");
+    } else sentence = parts.map(esc).join(`<span class="blank">&nbsp;</span>`);
+    body = `<div class="q-prompt">${e.type === "kasus" ? "Complete com o caso certo" : "Complete no Perfekt"}<br><span class="de">${sentence}</span></div>
+    <div class="choices">${e.opts.map((o,i) => {
+      let cls = ""; if (answered) { if (i === e.ans) cls = "right"; else if (i === x.ans) cls = "wrong"; }
+      return `<button class="choice ${cls}" data-act="exPick" data-v="${i}" ${answered ? "disabled" : ""}><span class="l">${"ABC"[i]}</span><span class="de" style="font-size:19px">${esc(o)}</span></button>`; }).join("")}</div>`;
+  } else {
+    const placed = x.picked.map(i => e.tiles[i]);
+    body = `<div class="q-prompt">Monte a frase na ordem certa<br><span class="de">${esc(e.lead)} …</span></div>
+    <div class="tiles target" aria-label="Sua frase">${placed.length ? x.picked.map((ti,pi) => `<button class="tilebtn k" data-act="exUntile" data-v="${pi}" ${answered ? "disabled" : ""}>${esc(e.tiles[ti])}</button>`).join("") : `<span class="muted small" style="align-self:center">Toque nas palavras abaixo</span>`}</div>
+    <div class="tiles">${x.order.filter(i => !x.picked.includes(i)).map(i => `<button class="tilebtn" data-act="exTile" data-v="${i}">${esc(e.tiles[i])}</button>`).join("")}</div>
+    ${!answered ? `<button class="btn solid block" style="margin-top:16px" data-act="exCheck" ${x.picked.length === e.tiles.length ? "" : "disabled"}>Verificar</button>` : ""}`;
+  }
+  const ok = answered && (e.type === "ordnung" ? x.ans === true : x.ans === e.ans);
+  const full = e.type === "ordnung" ? `${e.lead} ${e.tiles.join(" ")}.` : "";
+  return `
+  <div class="q-top"><button class="link" data-act="exEnd">← Encerrar</button><span class="timer num" data-timer="ex">5:00</span><span class="num small muted">${x.i + 1} / ${x.items.length}</span></div>
+  <div class="prog"><i style="width:${(x.i / x.items.length) * 100}%"></i></div>
+  <div class="q-type">${T.pt} · ${T.de}${e.tag ? ` · ${e.tag}` : ""} <span class="tag">exemplo</span></div>
+  ${body}
+  ${answered ? `<div class="feedback ${ok ? "" : "no"}"><b>${ok ? "Certo." : "Ainda não."}</b>${full ? `<span class="de" style="font-size:18px">${esc(full)}</span><br>` : ""}${esc(e.why)}</div>
+  <button class="btn solid block" style="margin-top:14px" data-act="exNext">${x.i + 1 < x.items.length ? "Continuar" : "Ver resultado"}</button>` : ""}`;
+}
+function vExResult() {
+  const x = UI.ex;
+  const n = Math.min(x.items.length, x.i + (x.ans !== null ? 1 : 0));
+  return `${head("Sessão concluída", "Bom trabalho")}
+  <div class="score">${x.right}<span class="muted" style="font-size:28px;font-weight:600"> / ${n}</span></div>
+  <div class="result-line"><span>${fmtMin(x.logged)} registrados</span><span><b>${streak()}</b> ${streak() === 1 ? "dia seguido" : "dias seguidos"}</span></div>
+  <div class="row-btns"><button class="btn solid" data-act="exStart" data-v="mix">Outra sessão</button><button class="btn" data-act="exClose">Voltar</button></div>`;
+}
+function finishEx() {
+  const x = UI.ex; if (x.over) return;
+  x.over = true;
+  const min = Math.max(1, Math.round((Date.now() - x.start) / 60000));
+  x.logged = min;
+  const answeredAny = x.i > 0 || x.ans !== null;
+  if (answeredAny) {
+    S.logs.push({id:uid(), d:today(), min, kind:"exercicios"});
+    if (!S.practice.includes(today())) S.practice.push(today());
+    save();
+  } else x.logged = 0;
+}
+
+/* --- Einbürgerungstest --- */
+function ebStat(id) { return S.einb[id] || {r:0,w:0}; }
+const mastered = () => EINB.filter(q => { const s = ebStat(q.id); return s.r >= 2 && s.r > s.w * 2; }).length;
+const toReview = () => EINB.filter(q => { const s = ebStat(q.id); return s.w > 0 && s.w * 2 >= s.r; }).length;
+const passMark = n => Math.ceil(n * 17 / 33);
+function vEbHome() {
+  const last = S.sims[S.sims.length - 1];
+  const n = Math.min(33, EINB.length);
+  return `
+  <div class="facts"><div><b>33</b><span>perguntas na prova</span></div><div><b>17</b><span>acertos para passar</span></div><div><b>60</b><span>minutos</span></div></div>
+  <div class="facts"><div><b>${mastered()}<span class="muted" style="font-size:15px">/${EINB.length}</span></b><span>dominadas</span></div><div><b>${toReview()}</b><span>para revisar</span></div><div><b>${last ? `${last.score}/${last.n}` : "—"}</b><span>último simulado</span></div></div>
+  <section class="sec">
+    <div class="sec-h"><h2>Modos</h2></div>
+    <button class="type" data-act="ebTrain"><span class="body"><span class="n" style="display:block">Treino</span><span class="p">Uma pergunta por vez, com correção na hora. As que você erra voltam mais vezes.</span></span><span class="pc">→</span></button>
+    <button class="type" data-act="simStart"><span class="body"><span class="n" style="display:block">Simulado</span><span class="p">Formato da prova: 33 perguntas, 60 minutos, resultado só no fim.</span></span><span class="pc">→</span></button>
+    <p class="note">As ${EINB.length} perguntas são exemplos no formato do catálogo oficial do BAMF (300 gerais + 10 do seu estado). Com o banco de exemplo, o simulado usa ${n} perguntas e a nota de corte proporcional: ${passMark(n)} acertos.</p>
+  </section>
+  ${S.sims.length ? `<section class="sec"><div class="sec-h"><h2>Simulados</h2><span class="aside">acertos</span></div>
+    ${S.sims.slice(-5).reverse().map(s => `<div class="logrow"><span class="num">${fmtDate(s.d)}</span><span class="num"><b>${s.score}/${s.n}</b> · <span class="${s.score >= passMark(s.n) ? "pass" : "fail"}">${s.score >= passMark(s.n) ? "aprovada" : "não passou"}</span></span></div>`).join("")}</section>` : ""}`;
+}
+function pickEb(exclude) {
+  const ws = EINB.map(q => { const s = ebStat(q.id); return Math.max(0.3, 1 + s.w * 2 - s.r * 0.5) * (q.id === exclude ? 0 : 1); });
+  let r = Math.random() * ws.reduce((a,b) => a + b, 0);
+  for (let i = 0; i < EINB.length; i++) { r -= ws[i]; if (r <= 0) return EINB[i]; }
+  return EINB[0];
+}
+function vEbTrain() {
+  const b = UI.eb, q = b.q, answered = b.ans !== null;
+  return `
+  <div class="q-top"><button class="link" data-act="ebEnd">← Encerrar</button><span class="num small muted">${b.right} de ${b.count} certas</span></div>
+  <div class="q-type">Treino · Frage ${q.id.slice(1)} <span class="tag">exemplo</span></div>
+  <div class="q-prompt">${esc(q.q)}</div>
+  <div class="choices">${q.opts.map((o,i) => { let cls = ""; if (answered) { if (i === q.ans) cls = "right"; else if (i === b.ans) cls = "wrong"; }
+    return `<button class="choice ${cls}" data-act="ebPick" data-v="${i}" ${answered ? "disabled" : ""}><span class="l">${"ABCD"[i]}</span><span>${esc(o)}</span></button>`; }).join("")}</div>
+  ${answered ? `<div class="feedback ${b.ans === q.ans ? "" : "no"}"><b>${b.ans === q.ans ? "Certo." : "Errado. Esta volta mais vezes."}</b>${esc(q.pt)}</div>
+  <button class="btn solid block" style="margin-top:14px" data-act="ebNext">Próxima</button>` : ""}`;
+}
+function vSim() {
+  const m = UI.sim;
+  if (m.done) {
+    const pm = passMark(m.list.length), ok = m.score >= pm;
+    const wrong = m.list.filter((q,i) => m.answers[i] !== q.ans);
+    return `${head("Einbürgerungstest · Simulado", "Resultado")}
+    <div class="score">${m.score}<span class="muted" style="font-size:28px;font-weight:600"> / ${m.list.length}</span></div>
+    <div class="result-line"><span class="${ok ? "pass" : "fail"}">${ok ? "Aprovada" : "Ainda não"}</span><span>nota de corte ${pm}</span><span class="num">${fmtMin(Math.max(1, Math.round((m.finished - m.start)/60000)))}</span></div>
+    ${wrong.length ? `<section class="sec"><div class="sec-h"><h2>Para revisar</h2><span class="aside num">${wrong.length}</span></div>
+      ${wrong.map(q => `<div class="item"><div class="body"><div class="t">${esc(q.q)}</div><div class="d"><b>${esc(q.opts[q.ans])}</b><br>${esc(q.pt)}</div></div></div>`).join("")}</section>` : ""}
+    <div class="row-btns" style="margin-top:20px"><button class="btn solid" data-act="simClose">Voltar</button></div>`;
+  }
+  const q = m.list[m.i], a = m.answers[m.i];
+  const answeredN = m.answers.filter(x => x !== undefined && x !== null).length;
+  return `
+  <div class="q-top"><button class="link" data-act="simAsk">Entregar</button><span class="timer num" data-timer="sim">60:00</span><span class="num small muted">${m.i + 1} / ${m.list.length}</span></div>
+  <div class="dots">${m.list.map((_,i) => `<i class="${i === m.i ? "c" : (m.answers[i] !== undefined && m.answers[i] !== null) ? "a" : ""}"></i>`).join("")}</div>
+  ${UI.confirm === "sim" ? `<div class="feedback no"><b>Entregar agora?</b>${answeredN} de ${m.list.length} respondidas.<div class="confirm"><button class="btn danger" data-act="simFinish">Entregar</button><button class="btn ghost" data-act="cancelConfirm">Continuar</button></div></div>` : ""}
+  <div class="q-type">Simulado <span class="tag">exemplo</span></div>
+  <div class="q-prompt">${esc(q.q)}</div>
+  <div class="choices">${q.opts.map((o,i) => `<button class="choice ${a === i ? "picked" : ""}" data-act="simPick" data-v="${i}"><span class="l">${"ABCD"[i]}</span><span>${esc(o)}</span></button>`).join("")}</div>
+  <div class="sim-nav"><button class="btn ghost" data-act="simMove" data-v="-1" ${m.i === 0 ? "disabled" : ""}>Anterior</button>${m.i + 1 < m.list.length ? `<button class="btn solid" data-act="simMove" data-v="1">Próxima</button>` : `<button class="btn solid" data-act="simAsk">Entregar</button>`}</div>`;
+}
+function finishSim() {
+  const m = UI.sim; if (!m || m.done) return;
+  m.done = true; m.finished = Date.now(); UI.confirm = null;
+  m.score = m.list.reduce((a,q,i) => a + (m.answers[i] === q.ans ? 1 : 0), 0);
+  m.list.forEach((q,i) => { const s = S.einb[q.id] || {r:0,w:0}; if (m.answers[i] === q.ans) s.r++; else s.w++; S.einb[q.id] = s; });
+  S.sims.push({d:today(), score:m.score, n:m.list.length});
+  S.logs.push({id:uid(), d:today(), min:Math.max(1, Math.round((m.finished - m.start)/60000)), kind:"outro"});
+  save();
+}
+
+/* ---------------- CARTEIRA ---------------- */
+function vCarteira() {
+  const done = FS_STEPS.filter(([id]) => S.fs[id]).length;
+  const st = deckStats("fahrschule");
+  const vocab = S.cards.filter(c => c.deck === "fahrschule");
+  return `${head("Führerschein · Klasse B", "Carteira de motorista")}
+  <div class="split"><div><b>Teórica</b><span>em português, no computador</span></div><div><b>Prática</b><span>em alemão, com o instrutor</span></div></div>
+  <section class="sec">
+    <div class="sec-h"><h2>Etapas</h2><span class="aside num" data-count="fs">${done} de ${FS_STEPS.length}</span></div>
+    <ul class="list">${FS_STEPS.map(([id,de,pt],i) => `
+      <li class="item ${S.fs[id] ? "done" : ""}"><span class="stepn">${pad(i+1)}</span>
+        <div class="body"><div class="t">${de}</div><div class="d">${pt}</div></div>
+        <button class="chk" data-act="fsCheck" data-v="${id}" aria-pressed="${!!S.fs[id]}" aria-label="Marcar ${de}">${checkSvg}</button></li>`).join("")}</ul>
+  </section>
+  <section class="sec">
+    <div class="sec-h"><h2>Vocabulário do instrutor</h2><span class="aside num">${st.due + Math.min(NEW_PER_SESSION, st.newC)} para hoje</span></div>
+    <p class="small muted" style="margin:8px 0 10px">Na aula prática tudo vem em alemão e rápido. Estes termos aparecem em quase toda aula.</p>
+    <div class="vocab">${vocab.map(c => `<div class="de">${artSpan(c.art)}${esc(c.word)}</div><div class="small">${esc(c.pt)}</div>`).join("")}</div>
+    <button class="btn solid block" style="margin-top:16px" data-act="study" data-v="fahrschule">Estudar baralho Fahrschule</button>
+  </section>`;
+}
+
+/* ---------------- PLANO ---------------- */
+function vPlano() {
+  const cur = currentPhase(), ci = PHASES.indexOf(cur);
+  const c = UI.confirm;
+  return `${head("Fahrplan bis Mai 2027", "Plano e marcos")}
+  <div>${PHASES.map((p,i) => { const n = p.ms.filter(([id]) => S.milestones[id]).length;
+    const cls = i === ci ? "cur" : i < ci ? "past" : "";
+    return `<section class="phase ${cls}">
+      <span class="node">${i+1}</span>
+      <div class="ph"><span class="pn">${p.name} ${i === ci ? '<span class="tag now">agora</span>' : ""}</span><span class="pm">${p.months}</span></div>
+      <div class="pf">${esc(p.grammar)} · ${esc(p.skill)}</div>
+      <div class="pbar" data-count="${p.id}">${p.ms.map(([id]) => `<i class="${S.milestones[id] ? "on" : ""}"></i>`).join("")}</div>
+      <ul class="list">${p.ms.map(([id,t]) => `<li class="item ${S.milestones[id] ? "done" : ""}">
+        <button class="chk" data-act="msCheck" data-v="${id}" data-p="${p.id}" aria-pressed="${!!S.milestones[id]}" aria-label="Marcar ${esc(t)}">${checkSvg}</button>
+        <div class="body"><div class="t" style="font-weight:${i === ci ? 600 : 500}">${esc(t)}</div></div></li>`).join("")}</ul>
+    </section>`; }).join("")}</div>
+
+  <section class="sec">
+    <div class="sec-h"><h2>Dados</h2><span class="aside">${storageOk ? "salvo neste navegador" : "não está salvando"}</span></div>
+    <div class="setgrid">
+      <div class="field"><label for="examDate">Data da prova B1</label><input class="input num" id="examDate" type="date" value="${S.examDate}" data-set="examDate"></div>
+      <div class="field"><label for="goalH">Meta semanal (h)</label><input class="input num" id="goalH" type="number" min="1" max="40" step="0.5" value="${S.goalMin/60}" data-set="goal"></div>
+    </div>
+    <div class="row-btns">
+      <button class="btn ghost" data-act="ask" data-v="samples">Remover exemplos</button>
+      <button class="btn ghost" data-act="ask" data-v="reset">Apagar tudo</button>
+    </div>
+    ${c === "samples" ? `<div class="confirm">Remove cartões, tempos e frases de exemplo. Exercícios e perguntas continuam. <button class="btn danger" data-act="removeSamples">Remover</button><button class="btn ghost" data-act="cancelConfirm">Cancelar</button></div>` : ""}
+    ${c === "reset" ? `<div class="confirm">Apaga todo o progresso e volta aos dados de exemplo. <button class="btn danger" data-act="resetAll">Apagar</button><button class="btn ghost" data-act="cancelConfirm">Cancelar</button></div>` : ""}
+    <p class="note">O progresso fica só neste navegador e neste aparelho. Limpar os dados do site apaga tudo.</p>
+  </section>`;
+}
+
+/* ---------------- sheets ---------------- */
+let sheetState = null;
+function openEntrySheet(entry, missed) {
+  sheetState = {id: entry ? entry.id : null, place: entry ? entry.place : PLACES[0], missed};
+  const e = entry || {pt:"", de:""};
+  $("#sheet").innerHTML = `<div class="scrim" data-act="sheetScrim"><form class="sheet" id="entryForm" role="dialog" aria-modal="true" aria-labelledby="sheetT">
+    <h3 id="sheetT">${entry ? "Editar frase" : missed ? "O que faltou hoje?" : "Frase aprendida"}</h3>
+    <div class="sub">${missed ? "Anote agora, mesmo sem saber em alemão. Depois você completa." : "Fica no diário com data e lugar."}</div>
+    <div class="field"><label for="fPt">O que você queria dizer (português)</label><textarea class="input" id="fPt" required>${esc(e.pt)}</textarea></div>
+    <div class="field"><label for="fDe">Em alemão ${missed ? "(se já souber)" : ""}</label><textarea class="input de" id="fDe" lang="de" placeholder="Kann ich …">${esc(e.de)}</textarea></div>
+    <div class="field"><label>Onde</label><div class="chips" id="fPlace">${PLACES.map(p => `<button type="button" data-act="place" data-v="${esc(p)}" aria-pressed="${p === sheetState.place}">${p}</button>`).join("")}</div></div>
+    ${entry && entry.cardId ? "" : `<label style="display:flex;gap:10px;align-items:center;margin:4px 0 16px;font-size:15px"><input type="checkbox" id="fCard" checked style="width:20px;height:20px;accent-color:var(--ink)"> Criar flashcard quando tiver a frase em alemão</label>`}
+    <div class="row-btns"><button type="submit" class="btn solid">Salvar</button><button type="button" class="btn ghost" data-act="sheetClose">Cancelar</button></div>
+    ${entry ? `<div class="confirm" style="margin-top:14px">${UI.confirm === "del" ? `Apagar esta frase? <button type="button" class="btn danger" data-act="diaryDel">Apagar</button>` : `<button type="button" class="link" data-act="askDel">Apagar frase</button>`}</div>` : ""}
+  </form></div>`;
+  setTimeout(() => { const f = $(entry ? "#fDe" : "#fPt"); f && f.focus(); }, 60);
+}
+function openLogSheet() {
+  sheetState = {log:true};
+  $("#sheet").innerHTML = `<div class="scrim" data-act="sheetScrim"><form class="sheet" id="logForm" role="dialog" aria-modal="true" aria-labelledby="sheetL">
+    <h3 id="sheetL">Registrar tempo</h3><div class="sub">Qualquer contato com alemão conta.</div>
+    <div class="setgrid">
+      <div class="field"><label for="lMin">Minutos</label><input class="input num" id="lMin" type="number" min="1" max="600" value="20" required></div>
+      <div class="field"><label for="lKind">Atividade</label><select class="input" id="lKind">${Object.entries(KINDS).map(([k,v]) => `<option value="${k}">${v}</option>`).join("")}</select></div>
+    </div>
+    <div class="row-btns"><button type="submit" class="btn solid">Registrar</button><button type="button" class="btn ghost" data-act="sheetClose">Cancelar</button></div>
+  </form></div>`;
+}
+function closeSheet() { $("#sheet").innerHTML = ""; sheetState = null; if (UI.confirm === "del") UI.confirm = null; }
+function makeCardFromEntry(e) {
+  const c = {id:uid(), deck:"saetze", art:"", word:e.de, pl:"", pt:e.pt, ex:"", due:null, ivl:0, ease:2.5, reps:0, lapses:0};
+  S.cards.push(c); e.cardId = c.id;
+}
+
+/* ---------------- toast ---------------- */
+let toastT;
+function toast(msg, undo) {
+  clearTimeout(toastT);
+  $("#toast").innerHTML = `<div class="toast" role="status"><span>${msg}</span>${undo ? `<button data-act="undo">Desfazer</button>` : ""}</div>`;
+  toastT = setTimeout(() => { $("#toast").innerHTML = ""; }, 4000);
+}
+
+/* ---------------- timers ---------------- */
+let tick = null;
+function stopTick() { if (tick) { clearInterval(tick); tick = null; } }
+function startTickIfNeeded() {
+  if (!(UI.ex && !UI.ex.over && S.tab === "treino") && !(UI.sim && !UI.sim.done && S.tab === "treino")) return;
+  const upd = () => {
+    if (UI.ex && !UI.ex.over) {
+      const left = Math.max(0, UI.ex.end - Date.now());
+      const el = document.querySelector('[data-timer="ex"]');
+      if (el) { el.textContent = `${Math.floor(left/60000)}:${pad(Math.floor(left/1000) % 60)}`; el.classList.toggle("low", left < 30000); }
+      if (left <= 0) { finishEx(); render(); }
+    } else if (UI.sim && !UI.sim.done) {
+      const left = Math.max(0, UI.sim.end - Date.now());
+      const el = document.querySelector('[data-timer="sim"]');
+      if (el) { el.textContent = `${Math.floor(left/60000)}:${pad(Math.floor(left/1000) % 60)}`; el.classList.toggle("low", left < 5*60000); }
+      if (left <= 0) { finishSim(); render(); }
+    }
+  };
+  upd(); tick = setInterval(upd, 1000);
+}
+
+/* ---------------- ações ---------------- */
+function goTop() { window.scrollTo({top:0}); }
+function refreshPhaseBar(pid) {
+  const p = PHASES.find(x => x.id === pid); const el = document.querySelector(`[data-count="${pid}"]`);
+  if (p && el) el.innerHTML = p.ms.map(([id]) => `<i class="${S.milestones[id] ? "on" : ""}"></i>`).join("");
+}
+function toggleRow(btn, store, id) {
+  store[id] = !store[id]; if (!store[id]) delete store[id];
+  const li = btn.closest(".item"); li.classList.toggle("done", !!store[id]);
+  btn.setAttribute("aria-pressed", String(!!store[id]));
+  save();
+}
+const A = {
+  tab(el) { const v = el.dataset.v; if (S.tab === v && (UI.sess || UI.ex || UI.eb || UI.sim)) { /* manter sessão */ }
+    S.tab = v; UI.confirm = null; save(); render(); goTop(); },
+  go(el) {
+    const v = el.dataset.v;
+    if (v === "cards") { S.tab = "cartoes"; UI.cardsView = "decks"; }
+    if (v === "diary") { S.tab = "cartoes"; UI.cardsView = "diary"; UI.sess = null; }
+    if (v === "ex") { S.tab = "treino"; UI.trView = "ex"; }
+    if (v === "einb") { S.tab = "treino"; UI.trView = "einb"; }
+    save(); render(); goTop();
+  },
+  dayCheck(el) { const t = today(); S.daily[t] = S.daily[t] || {}; toggleRow(el, S.daily[t], el.dataset.v); },
+  msCheck(el) { toggleRow(el, S.milestones, el.dataset.v); refreshPhaseBar(el.dataset.p); },
+  fsCheck(el) { toggleRow(el, S.fs, el.dataset.v); const c = document.querySelector('[data-count="fs"]'); if (c) c.textContent = `${FS_STEPS.filter(([id]) => S.fs[id]).length} de ${FS_STEPS.length}`; },
+  log(el) {
+    const k = el.dataset.k, m = +el.dataset.m; const entry = {id:uid(), d:today(), min:m, kind:k};
+    S.logs.push(entry); UI.lastLog = entry.id; save();
+    el.classList.add("hit"); setTimeout(() => { render(); toast(`+${fmtMin(m)} · ${KINDS[k]}`, true); }, 260);
+  },
+  logOther() { openLogSheet(); },
+  undo() { if (!UI.lastLog) return; S.logs = S.logs.filter(l => l.id !== UI.lastLog); UI.lastLog = null; save(); $("#toast").innerHTML = ""; render(); },
+  delLog(el) { S.logs = S.logs.filter(l => l.id !== el.dataset.v); save(); render(); },
+  cardsView(el) { UI.cardsView = el.dataset.v; render(); },
+  study(el) {
+    const deck = el.dataset.v; const q = buildQueue(deck);
+    if (!q.length) { toast("Nada para revisar neste baralho hoje."); return; }
+    S.tab = "cartoes"; UI.sess = {deck, queue:q, i:0, flipped:false, seen:0, wrong:0, start:Date.now()};
+    render(); goTop();
+  },
+  flip() {
+    const s = UI.sess; if (!s) return; s.flipped = !s.flipped;
+    $("#flip").classList.toggle("on", s.flipped);
+    $("#rate").hidden = !s.flipped; $("#flipcta").hidden = s.flipped;
+  },
+  rate(el) {
+    const s = UI.sess; const r = +el.dataset.v; const c = S.cards.find(x => x.id === s.queue[s.i]);
+    schedule(c, r); s.seen++;
+    if (r === 0) { s.wrong++; s.queue.push(c.id); }
+    s.i++; s.flipped = false; save(); render();
+  },
+  endSess() { UI.sess = null; render(); goTop(); },
+  logCardsSess() {
+    const s = UI.sess; const m = Math.max(1, Math.round((Date.now() - s.start)/60000));
+    S.logs.push({id:uid(), d:today(), min:m, kind:"cards"}); save(); UI.sess = null; render(); toast(`+${fmtMin(m)} · Flashcards`);
+  },
+  missed() { UI.confirm = null; openEntrySheet(null, true); },
+  diaryNew() { UI.confirm = null; openEntrySheet(null, false); },
+  diaryEdit(el) { UI.confirm = null; const e = S.diary.find(x => x.id === el.dataset.v); if (e) openEntrySheet(e, false); },
+  place(el) { sheetState.place = el.dataset.v; document.querySelectorAll("#fPlace button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === sheetState.place))); },
+  sheetClose() { closeSheet(); },
+  sheetScrim(el, ev) { if (ev.target === el) closeSheet(); },
+  askDel() { UI.confirm = "del"; const e = S.diary.find(x => x.id === sheetState.id); const pt = $("#fPt").value, de = $("#fDe").value; const place = sheetState.place; openEntrySheet({...e, pt, de, place}, false); },
+  diaryDel() {
+    const e = S.diary.find(x => x.id === sheetState.id);
+    if (e && e.cardId) S.cards = S.cards.filter(c => c.id !== e.cardId);
+    S.diary = S.diary.filter(x => x.id !== sheetState.id); UI.confirm = null; save(); closeSheet(); render(); toast("Frase apagada.");
+  },
+  trView(el) { UI.trView = el.dataset.v; render(); },
+  exStart(el) { UI.eb = null; UI.sim = null; startEx(el.dataset.v); S.tab = "treino"; render(); goTop(); },
+  exPick(el) {
+    const x = UI.ex, e = x.items[x.i]; if (x.ans !== null) return;
+    x.ans = e.type === "artikel" ? el.dataset.v : +el.dataset.v;
+    const ok = e.type === "artikel" ? x.ans === e.ans : x.ans === e.ans;
+    recordEx(e, ok); render();
+  },
+  exTile(el) { UI.ex.picked.push(+el.dataset.v); render(); },
+  exUntile(el) { UI.ex.picked.splice(+el.dataset.v, 1); render(); },
+  exCheck() {
+    const x = UI.ex, e = x.items[x.i];
+    const ok = x.picked.map(i => e.tiles[i]).join(" ") === e.tiles.join(" ");
+    x.ans = ok; recordEx(e, ok); render();
+  },
+  exNext() {
+    const x = UI.ex; x.i++; x.ans = null;
+    if (x.i >= x.items.length) { finishEx(); } else prepOrder();
+    render(); goTop();
+  },
+  exEnd() { finishEx(); render(); },
+  exClose() { UI.ex = null; render(); },
+  ebTrain() { UI.ex = null; UI.sim = null; UI.eb = {q:pickEb(), ans:null, count:0, right:0, start:Date.now()}; render(); goTop(); },
+  ebPick(el) {
+    const b = UI.eb; if (b.ans !== null) return; b.ans = +el.dataset.v; b.count++;
+    const s = S.einb[b.q.id] || {r:0,w:0}; if (b.ans === b.q.ans) { s.r++; b.right++; } else s.w++;
+    S.einb[b.q.id] = s; save(); render();
+  },
+  ebNext() { const b = UI.eb; b.q = pickEb(b.q.id); b.ans = null; render(); goTop(); },
+  ebEnd() {
+    const b = UI.eb; if (b.count) { const m = Math.max(1, Math.round((Date.now() - b.start)/60000)); S.logs.push({id:uid(), d:today(), min:m, kind:"outro"}); save(); toast(`${b.right} de ${b.count} certas · +${fmtMin(m)}`); }
+    UI.eb = null; render();
+  },
+  simStart() {
+    UI.ex = null; UI.eb = null; UI.confirm = null;
+    const list = shuffle(EINB).slice(0, 33);
+    UI.sim = {list, i:0, answers:new Array(list.length).fill(null), start:Date.now(), end:Date.now() + 60*60000, done:false};
+    render(); goTop();
+  },
+  simPick(el) { const m = UI.sim; m.answers[m.i] = +el.dataset.v; if (m.i + 1 < m.list.length) setTimeout(() => { m.i++; render(); }, 180); render(); },
+  simMove(el) { const m = UI.sim; m.i = Math.min(m.list.length - 1, Math.max(0, m.i + +el.dataset.v)); render(); },
+  simAsk() { UI.confirm = "sim"; render(); goTop(); },
+  simFinish() { finishSim(); render(); goTop(); },
+  simClose() { UI.sim = null; render(); },
+  ask(el) { UI.confirm = el.dataset.v; render(); },
+  cancelConfirm() { UI.confirm = null; render(); },
+  removeSamples() {
+    const ids = new Set(S.cards.filter(c => c.sample).map(c => c.id));
+    S.cards = S.cards.filter(c => !c.sample);
+    S.logs = S.logs.filter(l => !l.sample);
+    S.diary = S.diary.filter(e => !e.sample);
+    S.diary.forEach(e => { if (ids.has(e.cardId)) delete e.cardId; });
+    UI.confirm = null; save(); render(); toast("Exemplos removidos.");
+  },
+  resetAll() { try { localStorage.removeItem(KEY); } catch (e) {} S = seed(); UI.confirm = null; UI.sess = UI.ex = UI.eb = UI.sim = null; save(); render(); toast("Tudo apagado."); },
+};
+function recordEx(e, ok) {
+  const s = S.exStats[e.type] || {r:0,w:0}; ok ? s.r++ : s.w++; S.exStats[e.type] = s;
+  if (ok) UI.ex.right++;
+  save();
+}
+
+document.addEventListener("click", ev => {
+  const el = ev.target.closest("[data-act]"); if (!el) return;
+  if (el.disabled) return;
+  const fn = A[el.dataset.act]; if (!fn) return;
+  if (el.dataset.act === "sheetScrim") { fn(el, ev); return; }
+  ev.preventDefault(); fn(el, ev);
+});
+document.addEventListener("submit", ev => {
+  ev.preventDefault();
+  if (ev.target.id === "logForm") {
+    const m = Math.round(+$("#lMin").value), k = $("#lKind").value;
+    if (!(m > 0)) return;
+    const entry = {id:uid(), d:today(), min:Math.min(600, m), kind:k}; S.logs.push(entry); UI.lastLog = entry.id;
+    save(); closeSheet(); render(); toast(`+${fmtMin(entry.min)} · ${KINDS[k]}`, true);
+    return;
+  }
+  if (ev.target.id === "entryForm") {
+    const pt = $("#fPt").value.trim(), de = $("#fDe").value.trim();
+    if (!pt && !de) { $("#fPt").focus(); return; }
+    const wantCard = $("#fCard") ? $("#fCard").checked : false;
+    let e = sheetState.id ? S.diary.find(x => x.id === sheetState.id) : null;
+    if (e) { e.pt = pt; e.de = de; e.place = sheetState.place; e.sample = false;
+      if (e.cardId) { const c = S.cards.find(x => x.id === e.cardId); if (c) { c.word = de || c.word; c.pt = pt; } } }
+    else { e = {id:uid(), date:today(), place:sheetState.place, de, pt}; S.diary.push(e); }
+    let msg = "Frase anotada no diário.";
+    if (de && wantCard && !e.cardId) { makeCardFromEntry(e); msg = "Frase anotada e cartão criado."; }
+    else if (!de) msg = "Anotada. Complete o alemão quando souber.";
+    UI.confirm = null; save(); closeSheet(); render(); toast(msg);
+  }
+});
+document.addEventListener("change", ev => {
+  const t = ev.target;
+  if (t.dataset.set === "examDate" && /^\d{4}-\d{2}-\d{2}$/.test(t.value)) { S.examDate = t.value; save(); toast(`Prova em ${fmtDate(t.value)}.`); }
+  if (t.dataset.set === "goal") { const h = parseFloat(t.value); if (h > 0 && h <= 40) { S.goalMin = Math.round(h * 60); save(); toast(`Meta: ${fmtMin(S.goalMin)} por semana.`); } }
+});
+document.addEventListener("keydown", ev => {
+  if (ev.key === "Escape" && sheetState) closeSheet();
+  if (UI.sess && S.tab === "cartoes" && !sheetState && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) {
+    if ((ev.key === " " || ev.key === "Enter") && !UI.sess.flipped && (document.activeElement.id === "flip" || document.activeElement === document.body)) { ev.preventDefault(); A.flip(); }
+    else if (UI.sess.flipped && ["1","2","3","4"].includes(ev.key)) { A.rate({dataset:{v:String(+ev.key - 1)}}); }
+  }
+});
+// virada de dia com o app aberto
+let lastDay = today();
+document.addEventListener("visibilitychange", () => { if (!document.hidden && today() !== lastDay) { lastDay = today(); render(); } });
+
+render();
+</script>
+</body>
+</html>
